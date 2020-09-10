@@ -51,6 +51,7 @@
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
 
+static NSArray<NSString *> *kUserDefinedActions = nil;
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
@@ -101,6 +102,10 @@ BOOL inForeground = NO;
 + (void)_initPush
 {
     [LPActionManager sharedManager];
+}
+
++ (void)setUserDefinedActions:(NSArray<NSString *> *)userDefinedActions {
+    kUserDefinedActions = userDefinedActions;
 }
 
 + (void)setApiHostName:(NSString *)hostName
@@ -1791,9 +1796,11 @@ BOOL inForeground = NO;
             }
             if (isPrioritySame) {//priority is same
                 NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext withMessages:messages];
-                //multiple messages have same priority and same countDown, only display one message
+                //multiple messages have same priority and same countDown, only display one message if message is controlled by SDK
                 if (currentCountDown == countDownThreshold) {
-                    break;
+                    if (kUserDefinedActions == nil || ![kUserDefinedActions containsObject:actionContext.name]) {
+                        break;
+                    }
                 }
             }
             isPrioritySame = YES;

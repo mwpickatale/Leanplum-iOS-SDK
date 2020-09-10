@@ -186,6 +186,8 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
 
 - (instancetype)init NS_UNAVAILABLE;
 
++ (void)setUserDefinedActions:(NSArray<NSString *> *)userDefinedActions;
+
 /**
  * Optional. Sets the API server. The API path is of the form http[s]://hostname/servletName
  * @param hostName The name of the API host, such as api.leanplum.com
